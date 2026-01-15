@@ -75,6 +75,23 @@ The metadata is rich and includes both QC metrics and biological annotations:
 4.  **Trajectory Inference:**
     *   Given the `Day` (differentiation time point) and states (`pre_adipo` -> `adipo`), constructing a pseudotime trajectory would allow us to place perturbations along the developmental path (e.g., "does Gene X knockout stall cells at the progenitor stage?").
 
-## 6. Conclusion
+## 7. Visualizations
+
+### 7.1 Perturbation Distribution
+![Perturbation Distribution](figures/perturbation_distribution.png)
+**Interpretation:** Sample sizes are well-balanced across perturbations, with ~300 cells per target gene. This uniform depth minimizes power imbalances during differential expression analysis. The Negative Control (NC) group is appropriately large (marked in red), providing a solid baseline for statistical comparisons.
+
+### 7.2 Cell State Enrichment
+![Program Enrichment](figures/program_enrichment.png)
+**Interpretation:** The binary usage of `adipo`, `pre_adipo`, `lipo`, and `other` columns confirms discrete cell state assignments. Approximately 30-40% of the cells are labeled as `adipo` or `pre_adipo`, indicating the dataset captures the active differentiation window. The `other` category likely contains transitioning or filtered low-quality cells.
+
+### 7.3 Data Normalization Check
+![Counts Distribution](figures/counts_distribution.png)
+**Interpretation:** 
+*   **Normalized (X):** The log-normalized data (left) shows a smooth, bell-like distribution appropriate for PCA/UMAP and linear models.
+*   **Raw Counts (Right):** The log1p-transformed raw counts show a characteristic zero-inflated distribution. The preservation of integer counts in `layers['counts']` makes this dataset compatible with probabilistic models like scVI or GLM-based DE tools (edgeR/DESeq2).
+
+## 8. Conclusion
+
 
 The `obesity_challenge_1` dataset is a high-quality, pre-processed resources. The critical path forward involves characterizing the baseline differentiation trajectory using the negative controls and then modeling the "vectors" of change induced by each gene knockout. Let's proceed with building the predictive text models.
