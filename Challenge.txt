@@ -1,0 +1,322 @@
+Obesity ML Competition: Tackling Metabolic Diseases - ​​Part 1
+Can you design algorithms that identify genes driving obesity and metabolic disease?
+
+You will get to work with cutting-edge biological data collected in partnership with the Eric and Wendy Schmidt Center at the Broad Institute, the Broad Diabetes Initiative, Massachusetts General Hospital, and Beth Israel Deaconess Medical Center. Your algorithms could directly guide biological discoveries in obesity!
+
+Quick TL;DR
+The Goal: Identify genetic "switches" that can trick human cells into burning fat instead of storing it.
+
+The Data Science: You will be given Single-Cell RNA sequencing (scRNA-seq) data from cells where specific genes have been knocked out (turned off) using CRISPR/Cas9.
+
+The Challenge: Build a model to predict how a cell’s behavior and development change when a new, unseen gene is turned off.
+
+Introduction
+The Biology: Storing Energy vs. Burning Energy
+Not all body fat is created equal. Our bodies primarily rely on two types of fat cells (adipocytes) to manage energy:
+
+White Fat: The "storage" cells. They hold onto excess energy from food. When we store too much, it leads to obesity and metabolic diseases like Type 2 Diabetes.
+
+Brown Fat: The "furnace" cells. Instead of storing energy, they burn sugar and fat to generate heat (thermogenesis).
+
+Most current obesity drugs work by making people feel less hungry. However, scientists are exploring a different approach: What if we could convince the body to produce more brown fat, or trigger white fat to start burning energy?
+
+The Experiment: Flipping Genetic Switches
+To find the biological "switches" that control these processes, researchers are conducting massive experiments. They harvest human fat-cell precursors and use CRISPR/Cas9 technology to turn off specific genes, one by one. They then observe:
+
+Does the cell still become a fat cell?
+
+Does it act like a white fat cell (storage) or a brown fat cell (burning)?
+
+How does the cell's internal machinery (gene expression) change?
+
+Why cannot we physically test every single gene in the human genome?
+There are 20,000 genes in our genomes! It would take too much time and money. We need Machine Learning to fill in the gaps. By training on the existing experimental data, your model will predict the biological outcome of turning off genes that haven't been tested yet.
+
+Why this Matters?
+Obesity affects over 890 million people worldwide and is a primary driver of cardiovascular disease and cancer. While weight-loss drugs exist, they don't work for everyone and often carry side effects.
+
+To develop better therapies, we need to understand the fundamental code of metabolism:
+
+Which genes tell fat cells how to develop?
+
+Which genes help turn white fat cells into brown/heat-producing fat cells?
+
+Which genes change how cells store or burn fat?
+
+If your model can successfully simulate how perturbing genes affect fat cells, it will allow researchers to screen thousands of potential drug targets purely computationally. This could dramatically accelerate the discovery of medicines that restore metabolic balance and fight disease.
+
+The Challenge
+In this competition, you are working with single-cell RNA sequencing data, which indicates how much each gene is expressed in each single cell. Scientists have "knocked out" (deleted) different genes in fat-cell precursors and measured how the cells changed.
+
+Your job is to build a model that predicts what happens when scientists turn off new genes that appear in the test set.
+
+You must predict two specific outcomes for these unseen gene knockouts:
+
+1. The "Internal State" (Gene Expression Profiles)
+You must predict the gene expression profile of single cells after the target gene is knocked out. This is a high-dimensional vector representing the activity levels of thousands of genes within the cell.
+
+2. The "Cell Identity" (Cell Type differentiation)
+Normally, these precursor cells differentiate into specific types of fat cells. You must estimate the resulting proportions of four distinct cell states:
+
+Pre-adipocyte: Early-stage cells that haven't differentiated yet.
+
+Adipocyte: Mature fat cells (the standard white fat).
+
+Lipogenic: Specialized fat-producing cells.
+
+Other: Cells that followed a different developmental path.
+
+Explore the full specifications for in-depth details.
+
+Crash Course
+Similar to last year, the Eric and Wendy Schmidt Center team prepared an 80-minute lecture series containing a biology overview needed for this challenge.
+
+
+Evaluation Phases
+In Crunch 1, you will have the opportunity to evaluate the predictive performance of your model on a validation dataset.
+
+There will be multiple validation checkpoints, with one occurring every Monday at 6:00 p.m. UTC:
+
+Checkpoint 1 - December 22th
+
+Checkpoint n - every Monday
+
+Last checkpoint - February 23th
+
+Last submission - February 28th
+
+You can still submit and run your code multiple times onto the platform.
+
+At a checkpoint, all of your (non scored) predictions will be scored.
+
+Overview
+In Crunch 1, we will explore how well we can predict the single-cell transcriptomic response to single-gene perturbations that were not measured and provided in the training dataset.
+
+Dataset
+The dataset includes perturbations targeting 157 genes, of which 150 are transcription factors (TFs). For each perturbation, we provide single-cell gene expression (RNA-seq) profiles measured at the day 14 of adipocyte differentiation, annotated with gene perturbation identity, quality control (QC) metrics, and cell metadata. The training dataset contains a subset of these perturbations, while a distinct set of single-gene perturbations is held out for validation and test.
+
+The layout is as follow:
+
+The dataset is provided in AnnData format (.h5ad) as obesity_challenge_1.h5ad.
+
+Normalized gene expression values are stored in adata.X. Raw counts were normalized to a target sum of 100,000 per cell, followed by a log_2(1+x) transformation (standard single-cell RNA-seq normalization; see lecture 2 of the crash course).
+
+Raw gene expression counts prior to normalization are stored in adata.layers['counts'] for reproducibility and alternative preprocessing.
+
+The perturbation target gene information is provided in adata.obs['gene'], with values corresponding to either “NC” for control cells or to the target gene name if the cell is perturbed. Control cells receive a perturbation that has no effect on the cell’s RNA-Seq profile.
+
+Cell state/program enrichment information is provided in .obs, with columns pre_adipo, adipo, lipo, and other indicating whether each cell was enriched for pre-adipocyte, adipocyte, or lipogenic programs. other was defined as cells that were not enriched for either pre-adipocyte or adipocyte programs. Program enrichment assignments were based on expert-curated canonical signature genes, and the list of signature genes is provided in signature_genes.csv.
+
+The full analysis workflow used to determine program enrichment is provided in the accompanying notebook (in R), which can be consulted for additional methodological details.
+
+We provide the cell state proportion for each of the perturbations in a separate file program_proportion.csv.
+
+During preprocessing, standard single-cell quality control (QC) was applied to remove low-quality cells and cell doublets based on sequencing library complexity, gene detection rate, and mitochondrial gene content. The dataset was then restricted to cells with a single confident guide assignment to a perturbation, and guides represented by fewer than 10 cells were excluded. Genes detected in fewer than 10 cells were removed, and known signature genes from signature_genes.csv were subsequently re-introduced.
+
+The .obs columns are defined as:
+
+orig.ident: The original sample ID.
+
+nCount_RNA: The number of UMIs detected per cell.
+
+nFeature_RNA: The number of genes detected per cell.
+
+nCount_guide: The number of sgRNA UMIs detected per cell.
+
+nFeature_guide: The number of sgRNAs detected per cell.
+
+percent.mt: The fraction of UMIs per cell that map to mitochondrial transcripts.
+
+SampleID: The sample ID.
+
+Day: The day of sample collection.
+
+num_features: The number of guides per cell (for low MOI data, after qc, only the cells with 1 guide are kept).
+
+feature_call: The guide assignment of each cell.
+
+num_umis: The number of guide umis per cell.
+
+gene: The perturbation target gene (or perturbation identity).
+
+positive_control: Whether the perturbation is one of the positive controls.
+
+Expected Output
+Participants must submit three outputs:
+
+File: prediction.h5ad
+An AnnData file containing predicted gene expression profiles normalized and log-transformed post-perturbation for 2,863 gene perturbations indicated in predict_perturbations.txt.
+
+Predictions should be stored in adata.X matrix with the corresponding perturbation identity recorded in adata.obs['gene'].
+
+The set of genes (columns) included in the prediction is defined explicitly by genes_to_predict provided at inference time and the columns of adata.X must follow this order.
+
+Note that the genes_to_predict list may change between validation (N=10,237) and test phases, and your model must generate predictions for whichever set of genes is supplied. The maximum number of genes that could be included in genes_to_predict is 21,592 corresponding to the total number of genes in the dataset.
+
+For each gene perturbation, we ask you to predict the gene expression profiles for 100 cells to quantify the distribution of each perturbation prediction. With N = len(genes_to_predict), the final prediction file is therefore required to have dimensions: [286,300 × N] (cells × genes_to_predict).
+
+File: predict_program_proportion.csv
+A CSV file reporting the predicted proportion of cells with enriched programs for each gene perturbation listed in predict_perturbations.txt.
+
+The file should contain one row per perturbation with the following columns:
+
+gene: should contain the perturbation name,
+
+pre_adipo, adipo, lipo, and other: should specify the predicted proportion of cells in each corresponding state for that perturbation,
+
+lipo_adipo: should be the ratio of lipo to adipo (representing the proportion of adipocytes with enriched lipogenic programs).
+
+This file should thus have 2,863 rows and 6 columns. An example is available in the data/ directory.
+
+File: Method description.md
+We ask you to please write a small document outlining the approaches used to generate both the predictions and the estimated proportions of cells enriched for each program.
+
+This should include sufficient details of the computational models employed and the procedures used to derive cell proportions.
+
+The document should be organized into three sections, represented as titles in a Markdown file:
+
+Method Description: Explain how your method works. (5-10 sentences)
+
+Rationale: Describe the reasoning behind your model. (5-10 sentences)
+
+Data and Resources Used: Specify the datasets and any other resources utilized. (5-10 sentences)
+
+Notes:
+
+A human will validate the content at the end of the competition.
+Work deemed unsatisfactory may be disqualified.
+
+This file must be provided during submission.
+If content needs to be changed, you must re-submit with the new version.
+
+The name must be Method Description.md; case does not matter.
+
+Only non-empty and non-comment lines are considered.
+
+Below is an example of how to format the file:
+
+# Method Description
+
+<!-- Explain how your method works. (5-10 sentences) -->
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Aliquam eget augue quis metus viverra vehicula sit amet lacinia odio.
+
+# Rationale
+
+<!-- Describe the reasoning behind your gene panel design. (5-10 sentences) -->
+Praesent dignissim ipsum vel leo eleifend, eget pulvinar mauris ornare.
+Duis efficitur lectus posuere iaculis dictum.
+
+# Data and Resources Used
+
+<!-- Specify the datasets and any other resources utilized. (5-10 sentences) -->
+Donec feugiat eros vel odio gravida venenatis.
+Nam et sem sit amet nisi vestibulum semper bibendum et libero.
+
+If there's an obvious issue regarding the format, you'll receive an immediate notification.
+
+Notebook users are required to use embedded files.
+
+Scoring
+Each metric will be displayed in a different leaderboard. Each will have a different ranking and opportunity for a prize.
+
+The metrics are classed into 2 categories:
+
+Transcriptome-wide metrics that will be computed computed using a subset of genes (i.e., the columns of the predicted matrix) for each perturbation.
+
+Metrics include:
+
+Pearson Delta between predicted and observed perturbation effects relative to perturbed mean.
+
+Maximum mean discrepancy (MMD) between predicted and observed distributions of single-cell profiles.
+
+Public leaderboard / validation (updated weekly): Evaluation uses 1,000 hidden genes.
+
+Private leaderboard / test phase: Both the number and identity of scoring genes will remain unknown.
+
+A Program-level metric that will evaluate whether models capture meaningful biological outcomes, which is:
+
+L1-distance between predicted and observed four cell state proportions for each perturbation (i.e. pre-adipogenic, adipogenic, lipogenic, and other)
+
+The evaluation code is available on GitHub.
+
+Code for local scoring will be available in the quickstarter.
+
+For more details about how the metrics formulas, please consult the Full Specifications.
+
+Submit
+To build a valid submission, your model needs to be coded within the infer function, effectively respecting the crunch code submission interface.
+
+def train(
+    data_directory_path: str,
+    model_directory_path: str,
+) -> None:
+    """
+    Train a perturbation prediction model.
+
+    Parameters:
+      data_directory_path: Directory where the data is located.
+      model_directory_path: Directory where your model state should be persisted (usually named `resources/`).
+    
+    Return:
+      None: Returned value is ignored.
+    """
+
+We recommend training locally and submitting weights because the dataset is large and cloud resources are limited.
+
+Make sure that the Method description.md file properly documents your model, so that the Eric and Wendy Schmidt Center team can reference your work in their publications.
+
+def infer(
+    data_directory_path: str,
+    prediction_directory_path: str,
+    prediction_h5ad_file_path: str,
+    program_proportion_csv_file_path: str,
+    model_directory_path: str,
+    predict_perturbations: list[str],
+    genes_to_predict: list[str],
+):
+    """
+    Run inference for a set of perturbations.
+
+    Parameters:
+      data_directory_path: Path to the training AnnData file.
+      prediction_directory_path: Directory where prediction files can be written.
+      prediction_h5ad_file_path: Direct path where to write the `prediction.h5ad` file.
+      program_proportion_csv_file_path: Direct path where to write the `predict_program_proportion.csv` file.
+      model_directory_path: Directory containing your persisted model files.
+      predict_perturbations: The perturbations for which to generate predictions.
+      genes_to_predict: List of gene names (columns) to include in the prediction.h5ad AnnData object.
+
+    Return:
+      None: Returned value is ignored.
+
+    Expected files:
+      prediction_directory_path / "prediction.h5ad": anndata.AnnData
+            AnnData matrix of size (n_perturbations * cells_per_perturbation, n_genes_to_predict), containing the predicted gene expression values.
+      prediction_directory_path / "predict_program_proportion.csv": pd.DataFrame
+            DataFrame (index=False) containing estimated cell-type proportions for each perturbation.
+    """
+
+An example is available in the quickstarter.
+
+FAQ
+
+I missed a checkpoint, can I participate to the next one?
+
+
+Why must external resources be published or in the public domain?
+
+External Resources
+Crunchers are encouraged to use publicly available external resources, including gene perturbation datasets and pre-trained models, as long as they are properly credited.
+
+References
+Below are a few references meant to provide more background and some of the approaches researchers are applying in the fields relevant to these Crunches. This is not meant to be an exhaustive list and many important works are not listed here.
+
+
+Single cell transcriptomic adipocytes datasets
+
+
+CRISPR/Cas9 genetic perturbation screens
+
+
+Modeling perturbations and causality
