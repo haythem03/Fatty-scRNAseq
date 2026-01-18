@@ -43,6 +43,7 @@ cd CRISPR_Knockout-scRNAseq
 ```
 
 # Set up environment
+```Bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -173,7 +174,7 @@ graph TD
 </div>
 
 ```
-📁 Fatty-scRNAseq/
+📁 CRISPR_Knockout-scRNAseq/
 │
 ├── 🔍 1-Explore_training_data/          # Phase 1: Data QC & Trajectory Mapping
 │   ├── explore_training_data.ipynb
@@ -428,8 +429,8 @@ graph TD
 
 ```bash
 # Clone repository
-git clone https://github.com/haythem03/Fatty-scRNAseq.git
-cd Fatty-scRNAseq
+git clone https://github.com/haythem03/CRISPR_Knockout-scRNAseq.git
+cd CRISPR_Knockout-scRNAseq
 
 # Create virtual environment (recommended)
 python -m venv .venv
@@ -591,15 +592,7 @@ This analysis was conducted for the **Broad Obesity 1 Challenge** hosted by **[C
 **Date:** January 2026  
 **License:** MIT
 
-```bibtex
-@misc{mami2026fatty,
-  author = {Mami, Haythem},
-  title = {Fatty-scRNAseq: Gene Regulatory Feature Engineering for Adipocyte Differentiation},
-  year = {2026},
-  publisher = {GitHub},
-  url = {https://github.com/haythem03/Fatty-scRNAseq}
-}
-```
+
 
 ---
 
@@ -607,11 +600,12 @@ This analysis was conducted for the **Broad Obesity 1 Challenge** hosted by **[C
 
 ### ⭐ If you found this analysis useful, please consider starring the repository!
 
-[![GitHub stars](https://img.shields.io/github/stars/haythem03/Fatty-scRNAseq?style=social)](https://github.com/haythem03/Fatty-scRNAseq/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/haythem03/CRISPR_Knockout-scRNAseq?style=social)](https://github.com/haythem03/CRISPR_Knockout-scRNAseq/stargazers)
 
-**Questions?** Open an [issue](https://github.com/haythem03/Fatty-scRNAseq/issues) or reach out!
+**Questions?** Open an [issue](https://github.com/haythem03/CRISPR_Knockout-scRNAseq/issues) or reach out!
 
 </div>
+
 
 
 
