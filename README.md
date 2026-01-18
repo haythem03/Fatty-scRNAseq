@@ -38,8 +38,9 @@ This repository provides a **complete end-to-end analysis pipeline** for underst
 
 ```bash
 # Clone the repository
-git clone https://github.com/haythem03/Fatty-scRNAseq.git
-cd Fatty-scRNAseq
+git clone https://github.com/haythem03/CRISPR_Knockout-scRNAseq.git
+cd CRISPR_Knockout-scRNAseq
+```
 
 # Set up environment
 python -m venv .venv
@@ -611,6 +612,7 @@ This analysis was conducted for the **Broad Obesity 1 Challenge** hosted by **[C
 **Questions?** Open an [issue](https://github.com/haythem03/Fatty-scRNAseq/issues) or reach out!
 
 </div>
+
 
 
 
