@@ -235,7 +235,7 @@ graph TD
 | **🔬 3** | **Perturbation Profiling** | Effect sizes, functional clusters | [📓 perturbation_analysis.ipynb](3-%20Perturbation_analysis/perturbation_analysis.ipynb) |
 | **🧠 4** | **Feature Engineering** | 42 ML features, biological validation | [📓 gene_regulatory_features.ipynb](4-%20Gene_regulatory_features/gene_regulatory_features.ipynb) |
 
-<details>
+
 <summary><b>📋 Detailed Phase Descriptions</b></summary>
 
 ### Phase 1: Exploratory Data Analysis
@@ -297,7 +297,7 @@ graph TD
 
 📊 [**View feature engineering report →**](4-%20Gene_regulatory_features/GENE_FEATURES_README.md)
 
-</details>
+
 
 ---
 
@@ -611,5 +611,6 @@ This analysis was conducted for the **Broad Obesity 1 Challenge** hosted by **[C
 **Questions?** Open an [issue](https://github.com/haythem03/Fatty-scRNAseq/issues) or reach out!
 
 </div>
+
 
 
